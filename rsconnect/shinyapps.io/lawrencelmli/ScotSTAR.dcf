@@ -1,0 +1,13 @@
+name: ScotSTAR
+title: ScotSTAR
+username:
+account: lawrencelmli
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2474519
+bundleId: 3306209
+url: https://lawrencelmli.shinyapps.io/ScotSTAR/
+when: 1592914861.63158
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|age_problem.R|drug_table.xlsx|LICENSE|Paediatric-Drug-Dose-CalculatorJune2018.xlsx|scotSTAR_logo.jpg|ScotSTAR_prep.R

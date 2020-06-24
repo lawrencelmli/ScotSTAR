@@ -1,0 +1,173 @@
+---
+title: "ScotSTAR Paediatric Retrieval Drug Calculator"
+output: 
+  html_document:
+    css: printout.css
+classoption: landscape
+params:
+  weight: "NULL"
+  year: "NULL"
+  month: "NULL"
+  day: "NULL"
+  allergies: "NULL"
+---
+
+**Weight:** `r params[["weight"]]` **kg**
+
+**Allergies:** `r params[["allergies"]]`
+
+**Age:** `r params[["year"]]` **Years** `r params[["month"]]` **Months** `r params[["day"]]` **Days**
+
+```{r label, message=FALSE, warning=FALSE, echo=FALSE}
+library(htmltools)
+htmltools::img(src = knitr::image_uri(file.path("pxLabel.png")), 
+               alt = 'Affix Label', 
+               style = 'position: absolute; top: 50px; right: 50px; z-index: -1;')
+```
+
+***
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+
+table.intubation <- intubation.calc()
+
+table.intubation <- table.intubation %>% 
+  mutate(check2 = check) %>%
+  select("Drug" = drug,
+         "Formulation" = formulation,
+         "Recommended Dose" = rec_dose,
+         "Dilution" = dilution,
+         "Volume" = volume,
+         "Dose" = dose,
+         "Prescriber" = prescription,
+         "Check 1" = check,
+         "Check 2" = check2
+     )
+   
+   kable(table.intubation, format = "html", escape = F) %>% 
+     kable_styling(full_width = T, font_size = 10, bootstrap_options = "condensed") %>%
+     add_header_above(c("Intubation Drugs" = 6, "Signatures" = 3)) %>%
+     row_spec(1:nrow(table.intubation), color = "black") %>% 
+     column_spec(1, bold = T, width = "8em") %>%
+     column_spec(2:3, width = "12em") %>%
+     column_spec(7:8, width = "5em", border_left = T, border_right = T) %>%
+     column_spec(9, width = "5em", border_left = T) 
+```
+
+   
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+   table.emergency <- emergency.calc()
+
+   table.emergency <- table.emergency %>%
+     mutate(check2 = check) %>%
+     select("Drug" = drug,
+            "Formulation" = formulation,
+            "Recommended Dose" = rec_dose,
+            "Dilution" = dilution,
+            "Volume" = volume,
+            "Dose" = dose,
+            "Prescriber" = prescription,
+            "Check 1" = check,
+            "Check 2" = check2
+            )
+
+   kable(table.emergency, format = "html", escape = F) %>%
+     kable_styling(full_width = T, font_size = 10, bootstrap_options = "condensed") %>%
+     add_header_above(c("Emergency Drugs" = 6, "Signatures" = 3)) %>%
+     row_spec(1:nrow(table.emergency), color = "black") %>%
+     column_spec(1, bold = T, width = "8em") %>%
+     column_spec(2:3, width = "12em") %>%
+     column_spec(7:8, width = "5em", border_left = T, border_right = T) %>%
+     column_spec(9, width = "5em", border_left = T) 
+```
+
+\pagebreak
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+   table.infusion <- infusion.calc()
+
+   table.infusion <- table.infusion %>%
+     mutate(check2 = check) %>%
+     select("Drug" = drug,
+            "Formulation" = formulation,
+            "Recommended Dose" = rec_dose,
+            "Standard Dilution" = dilution,
+            "Add to Syringe" = to_syringe,
+            "Infusion Rate" = rate,
+            "Prescriber" = prescription,
+            "Check 1" = check,
+            "Check 2" = check2
+            )
+
+   kable(table.infusion, "html", escape = F) %>%
+     kable_styling(full_width = T, font_size = 10, bootstrap_options = "condensed") %>%
+     add_header_above(c("Infusion Drugs" = 6, "Signatures" = 3)) %>%
+     row_spec(1:nrow(table.infusion), color = "black") %>%
+     column_spec(1, bold = T, width = "8em") %>%
+     column_spec(2, width = "12em") %>%
+     column_spec(3, width = "14em") %>%
+     column_spec(4, width = "16em") %>% 
+     column_spec(5, width = "9em") %>%
+     column_spec(7:8, width = "5em", border_left = T, border_right = T) %>%
+     column_spec(9, width = "5em", border_left = T) 
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+   table.broncho <- broncho.calc()
+
+   # st_dil_pop <- c("or 0.9% Sodium Chloride", "or 0.9% Sodium Chloride")
+   # 
+   # dose_load_pop <- c("Omit loading if adequate level on oral theophylline. Max 500 mg",
+   #                    "Maximum loading dose 250 micrograms")
+
+   # table.broncho$st_dilution <- cell_spec(table.broncho$st_dilution,
+   #   popover = spec_popover(
+   #     content = st_dil_pop,
+   #     title = NULL,
+   #     position = "right",
+   #     trigger = "hover"
+   #   )
+   # )
+
+   table.broncho <- table.broncho %>%
+     mutate(check2 = check) %>%
+     select("Drug" = drug,
+            "Formulation" = formulation,
+            "Standard Dilution (Note)" = st_dilution,
+            "Loading Dose (Note)" = dose_load,
+            "Maintenance Dose" = dose_infusion,
+            "Dose" = LD_dose,
+            "Volume" = LD_vol,
+            "Rate" = LD_rate,
+            "Duration" = duration,
+            "Infusion Rate" = maintenance_rate,
+            "Prescriber" = prescription,
+            "Check 1" = check,
+            "Check 2" = check2
+            )
+
+   kable(table.broncho, "html", escape = F) %>%
+     kable_styling("striped", full_width = T, font_size = 10, bootstrap_options = "condensed") %>%
+     add_header_above(c("IV Bronchodilators" = 5, "Loading Dose" = 4, "Maintenance" = 1, "Signatures" = 3)) %>%
+     row_spec(1:nrow(table.broncho), color = "black", background = "white") %>%
+     column_spec(1, bold = T, width = "8em") %>%
+     column_spec(11:12, width = "5em", border_left = T, border_right = T) %>%
+     column_spec(13, width = "5em", border_left = T) %>%
+     footnote(general = "Some comments on IV Aminophylline and IV Salbutamol",
+              number = c("Both can be diluted in either 5% Glucose or 0.9% Sodium Chloride",
+                         "Omit aminophylline loading if adequate levels on oral theophylline.
+                         Maxium loading dose is 500 mg",
+                         "Maximum loading dose for IV salbutamol is 250 micrograms (1.25 mls)")
+              )
+
+
+
+
+```
+
